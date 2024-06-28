@@ -8,37 +8,54 @@ Pyhton 3.11.0
 - afficher tableau dans jolie grid ok
 - changer couleur cases ok
 - fonction prend état en cours et calcul le suivant ok
-- bouton pour cette fonction et afficher nouvel état
-- cliquer sur case pour la remplir
-- bouton pause et start
-- bouton vitesse
+- bouton pour cette fonction et afficher nouvel état ok
+- cliquer sur case pour la remplir ok
+- étendre les limites ? voir comment étendre la grille à l'infini peut etre abandonné le tableau et juste jouer avec les caese et coordonées
+- bouton pause et start ok
+- bouton vitesse ok (si trop grande vitesse bug my bad)
 - bouton changer règles
 """
 import tkinter as tk
 import random
 
-N = 10
+N = 20
 CELL_SIZE = 25
 DELAY = 1000
-LISTE = []
+ONGOING_STATE = 0
+SPEED = 500
 
 #TEST
 def click_button():
-    print("Bouton cliqué !")
     game_update()
 
-def get_cell_clicked(x, y):
+def put_cell_clicked(x, y):
     x, y = x//CELL_SIZE, y//CELL_SIZE
-    if grid[x][y] == 0 :
-        grid[x][y] = 1
+    if grid[y][x] == 0 :
+        grid[y][x] = 1
     else:
-        grid[x][y] = 0
+        grid[y][x] = 0
     update_grid_on_canvas()
 
 def get_click_coordinates(event):
     x = event.x
     y = event.y
-    get_cell_clicked(x, y)
+    put_cell_clicked(x, y)
+
+def start_stop():
+    global ONGOING_STATE
+    ONGOING_STATE = 1 if ONGOING_STATE == 0 else 0
+    if ONGOING_STATE:
+        ongoing()
+
+def ongoing():
+    if ONGOING_STATE:
+        game_update()
+        window.after(SPEED, ongoing)
+
+def change_speed():
+    global SPEED
+    factor = speed_input.get()
+    SPEED = SPEED // int(factor)
 
 #TEST fin
 
@@ -67,6 +84,7 @@ def show_grid(grid):
 
 def game_update():
     """Update the game grid according to Conway's rules"""
+    global ONGOING_STATE
     global grid
     new_game_grid = new_grid()
     for row in range(N):
@@ -87,6 +105,7 @@ def game_update():
     grid = new_game_grid
     update_grid_on_canvas()
 
+
 def update_grid_on_canvas():
     """Update the canvas to reflect the updated grid"""
     for column in range(N):
@@ -101,16 +120,26 @@ def main():
     grid[1][2] = 1
     grid[3][2] = 1
     show_grid(grid)
-    window.bind("<Button-1>", get_click_coordinates)
+    window.canvas.bind("<Button-1>", get_click_coordinates)
     window.mainloop()
 
 # Create the main window
 window = tk.Tk()
 window.title("Conway's Game of Life")
 
-# Création du bouton
-bouton = tk.Button(window, text="Next step", command=click_button)
-bouton.pack()
+# Create buttons
+button_next = tk.Button(window, text="Next step", command=click_button)
+button_next.pack()
+button_start_stop = tk.Button(window, text="Play/Stop", command=start_stop)
+button_start_stop.pack()
+
+#Create input user
+speed = tk.IntVar()
+speed_input = tk.Entry(window, textvariable=speed)
+speed_input.pack()
+
+button_speed = tk.Button(window, text="change speed", command=change_speed)
+button_speed.pack()
 
 if __name__ == "__main__":
     main()
