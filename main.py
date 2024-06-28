@@ -20,6 +20,28 @@ import random
 N = 10
 CELL_SIZE = 25
 DELAY = 1000
+LISTE = []
+
+#TEST
+def click_button():
+    print("Bouton cliqué !")
+    game_update()
+
+def get_cell_clicked(x, y):
+    x, y = x//CELL_SIZE, y//CELL_SIZE
+    if grid[x][y] == 0 :
+        grid[x][y] = 1
+    else:
+        grid[x][y] = 0
+    update_grid_on_canvas()
+
+def get_click_coordinates(event):
+    x = event.x
+    y = event.y
+    get_cell_clicked(x, y)
+
+#TEST fin
+
 
 def new_grid():
     """Create a grid of size N x N filled with zeros"""
@@ -75,14 +97,40 @@ def update_grid_on_canvas():
 def main():
     global grid
     grid = new_grid()
-    grid[1][1] = 1
+    grid[2][2] = 1
+    grid[1][2] = 1
+    grid[3][2] = 1
     show_grid(grid)
-    window.after(DELAY, game_update)
+    window.bind("<Button-1>", get_click_coordinates)
     window.mainloop()
 
 # Create the main window
 window = tk.Tk()
 window.title("Conway's Game of Life")
 
+# Création du bouton
+bouton = tk.Button(window, text="Next step", command=click_button)
+bouton.pack()
+
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
