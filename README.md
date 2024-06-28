@@ -10,4 +10,6 @@ un jeu de la vie qui va devenir girly pop
 - [ ] étendre les limites ? voir comment étendre la grille à l'infini peut etre abandonné le tableau et juste jouer avec les caese et coordonées  
 - [x] bouton pause et start  
 - [x] bouton vitesse (si trop grande vitesse bug my bad)  
-- [ ] bouton changer règles  
+- [ ] bouton changer règles
+- [ ] rendre tout plus joli et girly pop
+- [ ] faire un mode ou les cases les plus colorées deviennent plus foncées ou un truc du style fin bref m'amuser avec quoi
