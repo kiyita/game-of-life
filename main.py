@@ -16,15 +16,24 @@ Pyhton 3.11.0
 - bouton changer règles
 """
 import tkinter as tk
+from tkinter import ttk
 import random
 
-N = 20
+N = 10
 CELL_SIZE = 25
 DELAY = 1000
 ONGOING_STATE = 0
-SPEED = 500
+INIT_SPEED = 500
+SPEED = INIT_SPEED
+INIT_OVERPOP = 3
+INIT_UNDERPOP = 2
+INIT_BIRTH = 3
+OVERPOP = INIT_OVERPOP
+UNDERPOP = INIT_UNDERPOP
+BIRTH = INIT_BIRTH #à changer pour rendre possible le fait d'avoir plusieurs nombre de naissance
 
-#TEST
+##Subfunction
+
 def click_button():
     game_update()
 
@@ -50,15 +59,39 @@ def start_stop():
 def ongoing():
     if ONGOING_STATE:
         game_update()
-        window.after(SPEED, ongoing)
+        window.after(int(SPEED), ongoing)
 
-def change_speed():
+def action(event):
     global SPEED
-    factor = speed_input.get()
-    SPEED = SPEED // int(factor)
+    factor = listeCombo.get()
+    print(factor)
+    SPEED = INIT_SPEED // float(factor)
 
-#TEST fin
+def change_underpop():
+    global UNDERPOP
+    UNDERPOP = int(underpop_input.get())
+    print(UNDERPOP)
 
+def change_overpop():
+    global OVERPOP
+    OVERPOP = int(overpop_input.get())
+    print(OVERPOP)
+
+def change_birth():
+    global BIRTH
+    BIRTH = int(birth_input.get())
+    print(BIRTH)
+
+def reset_settings():
+    global UNDERPOP
+    global OVERPOP
+    global BIRTH
+    UNDERPOP = INIT_UNDERPOP
+    OVERPOP = INIT_OVERPOP
+    BIRTH = INIT_BIRTH
+
+
+##Main functions (minimal change)
 
 def new_grid():
     """Create a grid of size N x N filled with zeros"""
@@ -96,10 +129,10 @@ def game_update():
                         if grid[row + i][column + j] == 1:
                             temp += 1
             if grid[row][column] == 1:
-                if temp in [2, 3]:
+                if UNDERPOP <= temp <= OVERPOP:
                     new_game_grid[row][column] = 1
             else:
-                if temp == 3:
+                if temp == BIRTH:
                     new_game_grid[row][column] = 1
 
     grid = new_game_grid
@@ -123,23 +156,60 @@ def main():
     window.canvas.bind("<Button-1>", get_click_coordinates)
     window.mainloop()
 
+
+##Working method for window, buttons and inputs
 # Create the main window
 window = tk.Tk()
 window.title("Conway's Game of Life")
 
-# Create buttons
+# Create buttons for start/stop and next step
 button_next = tk.Button(window, text="Next step", command=click_button)
 button_next.pack()
+
 button_start_stop = tk.Button(window, text="Play/Stop", command=start_stop)
 button_start_stop.pack()
 
-#Create input user
-speed = tk.IntVar()
-speed_input = tk.Entry(window, textvariable=speed)
-speed_input.pack()
+button_reset = tk.Button(window, text="reset settings", command=reset_settings)
+button_reset.pack()
 
-button_speed = tk.Button(window, text="change speed", command=change_speed)
-button_speed.pack()
+#Create checklist for speed
+labelSpeed = tk.Label(window, text = "Choisissez une vitesse")
+labelSpeed.pack()
+
+listeSpeed=[1, 2, 3, 0.5]
+
+listeCombo = ttk.Combobox(window, values=listeSpeed)
+
+listeCombo.current(0)
+
+listeCombo.pack()
+listeCombo.bind("<<ComboboxSelected>>", action)
+
+#Create input user
+underpop = tk.IntVar()
+underpop_input = tk.Entry(window, textvariable=underpop)
+underpop_input.pack()
+
+button_underpop = tk.Button(window, text="change underpop", command=change_underpop)
+button_underpop.pack()
+
+
+overpop = tk.IntVar()
+overpop_input = tk.Entry(window, textvariable=overpop)
+overpop_input.pack()
+
+button_overpop = tk.Button(window, text="change overpop", command=change_overpop)
+button_overpop.pack()
+
+
+birth = tk.IntVar()
+birth_input = tk.Entry(window, textvariable=birth)
+birth_input.pack()
+
+button_birth = tk.Button(window, text="change birth", command=change_birth)
+button_birth.pack()
+
+
 
 if __name__ == "__main__":
     main()
