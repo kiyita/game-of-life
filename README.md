@@ -12,6 +12,7 @@ un jeu de la vie qui va devenir girly pop
 - [x] bouton vitesse (si trop grande vitesse bug my bad)  
 - [x] bouton changer règles (nombre de cellule pour sur/souspopulation, naissance, prise en compte de plus de voisins ?)
 - [x] régler les bugs (vitesse divisée par 0, trop rapide donc crash, faut faire un truc pour les bords aussi bref)
+- [ ] faire un système de +1 -1 pour les paramètres changeables + vérif que overpop > underpop
 - [ ] rendre tout plus joli et girly pop
 - [ ] faire un mode ou les cases les plus colorées deviennent plus foncées ou un truc du style fin bref m'amuser avec quoi
 - [ ] faire des presets
