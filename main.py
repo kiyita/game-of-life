@@ -8,6 +8,7 @@ Started on 27/06/24
 
 import tkinter as tk
 from tkinter import ttk
+from functools import partial
 import random
 
 
@@ -61,19 +62,23 @@ def action(event):
     print(factor)
     SPEED = INIT_SPEED // float(factor)
 
-def change_underpop():
+def change_underpop(incr):
     global UNDERPOP
-    UNDERPOP = int(underpop_input.get())
+    if 0 <= UNDERPOP + incr <= OVERPOP :
+        UNDERPOP += incr
     print(UNDERPOP)
 
-def change_overpop():
+def change_overpop(incr):
     global OVERPOP
-    OVERPOP = int(overpop_input.get())
+    if UNDERPOP <= OVERPOP + incr <= 8 :
+        OVERPOP += incr
     print(OVERPOP)
 
-def change_birth():
+
+def change_birth(incr):
     global BIRTH
-    BIRTH = int(birth_input.get())
+    if UNDERPOP <= BIRTH + incr <= OVERPOP :
+        BIRTH += incr
     print(BIRTH)
 
 def reset_settings():
@@ -93,7 +98,7 @@ def new_grid():
 
 def show_grid(grid):
     """Display the grid on the Tkinter canvas"""
-    window.canvas = tk.Canvas(window, width=GRID_SIZE*CELL_SIZE, height=GRID_SIZE*CELL_SIZE, borderwidth=0, highlightthickness=0)
+    window.canvas = tk.Canvas(frame6, width=GRID_SIZE*CELL_SIZE, height=GRID_SIZE*CELL_SIZE, borderwidth=0, highlightthickness=0)
     window.canvas.pack(side="top", fill="both", expand="true")
     window.cellwidth = CELL_SIZE
     window.cellheight = CELL_SIZE
@@ -158,23 +163,43 @@ window = tk.Tk()
 window.configure(bg='pink')
 window.title("Conway's Game of Life")
 
+
+# Create frame to organize
+frame1 = tk.Frame(window)
+frame1.pack(side=tk.TOP, pady=10)
+
+frame2 = tk.Frame(window)
+frame2.pack(side=tk.TOP, pady=10)
+
+frame3 = tk.Frame(window)
+frame3.pack(side=tk.TOP, pady=10)
+
+frame4 = tk.Frame(window)
+frame4.pack(side=tk.TOP, pady=10)
+
+frame5 = tk.Frame(window)
+frame5.pack(side=tk.TOP, pady=10)
+
+frame6 = tk.Frame(window)
+frame6.pack(side=tk.TOP, pady=10, padx = 10)
+
 # Create buttons for start/stop and next step
-button_next = tk.Button(window, text="Next step", command=click_button, activebackground='red')
-button_next.pack(pady= 5, padx= 5)
+button_next = tk.Button(frame1, text="Next step", command=click_button, activebackground='red')
+button_next.pack(pady= 5, padx= 5, side=tk.LEFT)
 
-button_start_stop = tk.Button(window, text="Play/Stop", command=start_stop, activebackground='orange')
-button_start_stop.pack(pady= 5, padx= 5)
+button_start_stop = tk.Button(frame1, text="Play/Stop", command=start_stop, activebackground='orange')
+button_start_stop.pack(pady= 5, padx= 5, side=tk.LEFT)
 
-button_reset = tk.Button(window, text="reset settings", command=reset_settings, activebackground='yellow')
-button_reset.pack(pady= 5, padx= 5)
+button_reset = tk.Button(frame1, text="Reset settings", command=reset_settings, activebackground='yellow')
+button_reset.pack(pady= 5, padx= 5, side=tk.LEFT)
 
 #Create checklist for speed
-labelSpeed = tk.Label(window, text = "Choisissez une vitesse")
+labelSpeed = tk.Label(frame2, text = "Choose speed")
 labelSpeed.pack(pady= 5, padx= 5)
 
 listeSpeed=[1, 2, 3, 0.5]
 
-listeCombo = ttk.Combobox(window, values=listeSpeed)
+listeCombo = ttk.Combobox(frame2, values=listeSpeed, state="readonly")
 
 listeCombo.current(0)
 
@@ -182,45 +207,26 @@ listeCombo.pack(pady= 5, padx= 5)
 listeCombo.bind("<<ComboboxSelected>>", action)
 
 #Create input user
-underpop = tk.IntVar()
-underpop_input = tk.Entry(window, textvariable=underpop)
-underpop_input.pack(pady= 5, padx= 5)
 
-button_underpop = tk.Button(window, text="change underpop", command=change_underpop, activebackground='green')
-button_underpop.pack(pady= 5, padx= 5)
+button_underpop_minus = tk.Button(frame3, text="Underpop -1", command=partial(change_underpop, -1), activebackground='green')
+button_underpop_minus.pack(pady= 5, padx= 5, side=tk.LEFT)
+button_underpop_plus = tk.Button(frame3, text="Underpop +1", command=partial(change_underpop, 1), activebackground='green')
+button_underpop_plus.pack(pady= 5, padx= 5, side=tk.LEFT)
 
+button_overpop_minus = tk.Button(frame4, text="Overpop -1", command=partial(change_overpop, -1), activebackground='blue')
+button_overpop_minus.pack(pady= 5, padx= 5, side=tk.LEFT)
+button_overpop_plus = tk.Button(frame4, text="Overpop +1", command=partial(change_overpop, 1), activebackground='blue')
+button_overpop_plus.pack(pady= 5, padx= 5, side=tk.LEFT)
 
-overpop = tk.IntVar()
-overpop_input = tk.Entry(window, textvariable=overpop)
-overpop_input.pack(pady= 5, padx= 5)
-
-button_overpop = tk.Button(window, text="change overpop", command=change_overpop, activebackground='blue')
-button_overpop.pack(pady= 5, padx= 5)
-
-
-birth = tk.IntVar()
-birth_input = tk.Entry(window, textvariable=birth)
-birth_input.pack(pady= 5, padx= 5)
-
-button_birth = tk.Button(window, text="change birth", command=change_birth, activebackground='purple')
-button_birth.pack(pady= 5, padx= 5)
+button_birth_minus = tk.Button(frame5, text="Birth -1", command=partial(change_birth, -1), activebackground='purple')
+button_birth_minus.pack(pady= 5, padx= 5, side=tk.LEFT)
+button_birth_plus = tk.Button(frame5, text="Birth +1", command=partial(change_birth, 1), activebackground='purple')
+button_birth_plus.pack(pady= 5, padx= 5, side=tk.LEFT)
 
 
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
