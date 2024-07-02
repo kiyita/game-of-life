@@ -14,7 +14,7 @@ import random
 
 ##Global variables
 
-GRID_SIZE = 10
+GRID_SIZE = 15
 CELL_SIZE = 25
 DELAY = 1000
 ONGOING_STATE = 0
@@ -49,7 +49,10 @@ def start_stop():
     global ONGOING_STATE
     ONGOING_STATE = 1 if ONGOING_STATE == 0 else 0
     if ONGOING_STATE:
+        button_start_stop.config(bg='powder blue', activebackground='orange')
         ongoing()
+    else:
+        button_start_stop.config(bg='SystemButtonFace', activebackground='orange')
 
 def ongoing():
     if ONGOING_STATE:
@@ -66,20 +69,20 @@ def change_underpop(incr):
     global UNDERPOP
     if 0 <= UNDERPOP + incr <= OVERPOP :
         UNDERPOP += incr
-    print(UNDERPOP)
+    update_settings()
 
 def change_overpop(incr):
     global OVERPOP
     if UNDERPOP <= OVERPOP + incr <= 8 :
         OVERPOP += incr
-    print(OVERPOP)
+    update_settings()
 
 
 def change_birth(incr):
     global BIRTH
     if UNDERPOP <= BIRTH + incr <= OVERPOP :
         BIRTH += incr
-    print(BIRTH)
+    update_settings()
 
 def reset_settings():
     global UNDERPOP
@@ -88,6 +91,12 @@ def reset_settings():
     UNDERPOP = INIT_UNDERPOP
     OVERPOP = INIT_OVERPOP
     BIRTH = INIT_BIRTH
+    update_settings()
+
+def update_settings():
+    text_underpop.configure(text=f'{UNDERPOP}')
+    text_overpop.configure(text=f'{OVERPOP}')
+    text_birth.configure(text=f'{BIRTH}')
 
 
 ##Main functions (minimal change)
@@ -160,28 +169,29 @@ def main():
 
 # Create the main window
 window = tk.Tk()
+window.iconbitmap("myIcon.ico")
 window.configure(bg='pink')
 window.title("Conway's Game of Life")
 
 
 # Create frame to organize
 frame1 = tk.Frame(window)
-frame1.pack(side=tk.TOP, pady=10)
+frame1.pack(side=tk.TOP, pady=5)
 
 frame2 = tk.Frame(window)
-frame2.pack(side=tk.TOP, pady=10)
+frame2.pack(side=tk.TOP, pady=5)
 
 frame3 = tk.Frame(window)
-frame3.pack(side=tk.TOP, pady=10)
+frame3.pack(side=tk.TOP, pady=5)
 
 frame4 = tk.Frame(window)
-frame4.pack(side=tk.TOP, pady=10)
+frame4.pack(side=tk.TOP, pady=5)
 
 frame5 = tk.Frame(window)
-frame5.pack(side=tk.TOP, pady=10)
+frame5.pack(side=tk.TOP, pady=5)
 
 frame6 = tk.Frame(window)
-frame6.pack(side=tk.TOP, pady=10, padx = 10)
+frame6.pack(side=tk.TOP, pady=10, padx = 5)
 
 # Create buttons for start/stop and next step
 button_next = tk.Button(frame1, text="Next step", command=click_button, activebackground='red')
@@ -212,26 +222,24 @@ button_underpop_minus = tk.Button(frame3, text="Underpop -1", command=partial(ch
 button_underpop_minus.pack(pady= 5, padx= 5, side=tk.LEFT)
 button_underpop_plus = tk.Button(frame3, text="Underpop +1", command=partial(change_underpop, 1), activebackground='green')
 button_underpop_plus.pack(pady= 5, padx= 5, side=tk.LEFT)
+text_underpop = tk.Label(frame3, text=str(UNDERPOP))
+text_underpop.pack(pady= 5, padx= 5, side=tk.LEFT)
 
 button_overpop_minus = tk.Button(frame4, text="Overpop -1", command=partial(change_overpop, -1), activebackground='blue')
 button_overpop_minus.pack(pady= 5, padx= 5, side=tk.LEFT)
 button_overpop_plus = tk.Button(frame4, text="Overpop +1", command=partial(change_overpop, 1), activebackground='blue')
 button_overpop_plus.pack(pady= 5, padx= 5, side=tk.LEFT)
+text_overpop = tk.Label(frame4, text=str(OVERPOP))
+text_overpop.pack(pady= 5, padx= 5, side=tk.LEFT)
 
 button_birth_minus = tk.Button(frame5, text="Birth -1", command=partial(change_birth, -1), activebackground='purple')
 button_birth_minus.pack(pady= 5, padx= 5, side=tk.LEFT)
 button_birth_plus = tk.Button(frame5, text="Birth +1", command=partial(change_birth, 1), activebackground='purple')
 button_birth_plus.pack(pady= 5, padx= 5, side=tk.LEFT)
+text_birth = tk.Label(frame5, text=str(BIRTH))
+text_birth.pack(pady= 5, padx= 5, side=tk.LEFT)
 
 
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
