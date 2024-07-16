@@ -62,7 +62,6 @@ def ongoing():
 def action(event):
     global SPEED
     factor = listeCombo.get()
-    print(factor)
     SPEED = INIT_SPEED // float(factor)
 
 def change_underpop(incr):
